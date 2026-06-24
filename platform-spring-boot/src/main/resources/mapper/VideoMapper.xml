@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.platformspringboot.mapper.VideoMapper">
+
+    <resultMap id="videoMap" type="Video">
+        <id     column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="cover_url" property="coverUrl"/>
+        <result column="video_url" property="videoUrl"/>
+        <result column="type" property="type"/>
+        <result column="tags" property="tags"/>
+        <result column="duration" property="duration"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <result column="favorite_count" property="favoriteCount"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="music_id" property="musicId"/>
+        <result column="subtitle" property="subtitle"/>
+    </resultMap>
+
+    <sql id="cols">id, user_id, title, content, cover_url, video_url, type, tags, duration,
+        view_count, like_count, comment_count, favorite_count, status, create_time, update_time, music_id, subtitle</sql>
+
+    <insert id="insert" parameterType="Video" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video (user_id, title, content, cover_url, video_url, type, tags, duration, music_id, subtitle)
+        VALUES (#{userId}, #{title}, #{content}, #{coverUrl}, #{videoUrl}, #{type}, #{tags}, #{duration}, #{musicId}, #{subtitle})
+    </insert>
+
+    <select id="findById" resultMap="videoMap">SELECT <include refid="cols"/> FROM video WHERE id=#{id}</select>
+
+    <select id="feed" resultMap="videoMap">
+        SELECT <include refid="cols"/> FROM video
+        <where>
+            status=1
+            <if test="lastId != null">AND id &lt; #{lastId}</if>
+            <if test="type != null">AND type=#{type}</if>
+        </where>
+        ORDER BY id DESC LIMIT #{size}
+    </select>
+
+    <select id="recommendByTags" resultMap="videoMap">
+        SELECT <include refid="cols"/> FROM video
+        WHERE status=1 AND type=#{type} AND id != #{excludeId}
+        <if test="tags != null and tags != ''">
+            AND (
+            <foreach collection="tags" item="t" separator=" OR ">
+                FIND_IN_SET(#{t}, tags)
+            </foreach>
+            )
+        </if>
+        ORDER BY (like_count + view_count*0.1) DESC
+        LIMIT #{size}
+    </select>
+
+    <select id="listByUser" resultMap="videoMap">
+        SELECT <include refid="cols"/> FROM video WHERE user_id=#{userId} AND status=1 ORDER BY id DESC LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="search" resultMap="videoMap">
+        SELECT <include refid="cols"/> FROM video
+        WHERE status=1 AND (title LIKE CONCAT('%',#{keyword},'%') OR content LIKE CONCAT('%',#{keyword},'%') OR tags LIKE CONCAT('%',#{keyword},'%'))
+        ORDER BY id DESC LIMIT #{offset}, #{size}
+    </select>
+
+    <update id="incView">UPDATE video SET view_count=view_count+1 WHERE id=#{id}</update>
+    <update id="incCommentCount">UPDATE video SET comment_count=comment_count+#{delta} WHERE id=#{id}</update>
+
+    <update id="incLikeCount">UPDATE video SET like_count=like_count+#{delta} WHERE id=#{id}</update>
+    <update id="incFavoriteCount">UPDATE video SET favorite_count=favorite_count+#{delta} WHERE id=#{id}</update>
+
+    <select id="loadAllIds" resultType="long">SELECT id FROM video WHERE status=1</select>
+    <select id="hotVideoIds" resultType="long">
+        SELECT id FROM video WHERE status=1 ORDER BY (like_count + view_count) DESC LIMIT 1000
+    </select>
+
+    <update id="updateStatus">UPDATE video SET status=#{status} WHERE id=#{id}</update>
+    <delete id="deleteById">DELETE FROM video WHERE id=#{id}</delete>
+    <select id="listByUserWithStatus" resultMap="videoMap">
+        SELECT <include refid="cols"/> FROM video WHERE user_id=#{userId} AND status=#{status} ORDER BY id DESC LIMIT #{offset}, #{size}
+    </select>
+</mapper>

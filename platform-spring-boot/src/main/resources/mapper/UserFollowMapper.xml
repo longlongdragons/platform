@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.platformspringboot.mapper.UserFollowMapper">
+
+    <insert id="insert" parameterType="UserFollow" useGeneratedKeys="true" keyProperty="id">
+        INSERT IGNORE INTO user_follow (user_id, follow_id) VALUES (#{userId}, #{followId})
+    </insert>
+
+    <delete id="delete">DELETE FROM user_follow WHERE user_id=#{userId} AND follow_id=#{followId}</delete>
+
+    <select id="exists" resultType="boolean">SELECT EXISTS(SELECT 1 FROM user_follow WHERE user_id=#{userId} AND follow_id=#{followId})</select>
+
+    <select id="countFollow" resultType="long">SELECT COUNT(*) FROM user_follow WHERE user_id=#{userId}</select>
+    <select id="countFans"   resultType="long">SELECT COUNT(*) FROM user_follow WHERE follow_id=#{userId}</select>
+
+    <select id="listFollowIds" resultType="long">SELECT follow_id FROM user_follow WHERE user_id=#{userId}</select>
+    <select id="listFansIds"   resultType="long">SELECT user_id   FROM user_follow WHERE follow_id=#{userId}</select>
+</mapper>

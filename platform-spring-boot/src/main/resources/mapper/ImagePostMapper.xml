@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.platformspringboot.mapper.ImagePostMapper">
+
+    <insert id="insert" parameterType="ImagePost">
+        INSERT INTO image_post (video_id, image_url, sort) VALUES (#{videoId}, #{imageUrl}, #{sort})
+    </insert>
+
+    <select id="listByVideo" resultType="string">SELECT image_url FROM image_post WHERE video_id=#{videoId} ORDER BY sort</select>
+
+    <delete id="deleteByVideo">DELETE FROM image_post WHERE video_id=#{videoId}</delete>
+</mapper>

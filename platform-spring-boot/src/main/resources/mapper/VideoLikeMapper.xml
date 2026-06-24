@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.platformspringboot.mapper.VideoLikeMapper">
+
+    <insert id="insert" parameterType="VideoLike" useGeneratedKeys="true" keyProperty="id">
+        INSERT IGNORE INTO video_like (user_id, video_id) VALUES (#{userId}, #{videoId})
+    </insert>
+
+    <delete id="delete">DELETE FROM video_like WHERE user_id=#{userId} AND video_id=#{videoId}</delete>
+
+    <select id="exists" resultType="boolean">SELECT EXISTS(SELECT 1 FROM video_like WHERE user_id=#{userId} AND video_id=#{videoId})</select>
+
+    <select id="countByVideo" resultType="long">SELECT COUNT(*) FROM video_like WHERE video_id=#{videoId}</select>
+
+    <select id="listVideoIdsByUser" resultType="long">SELECT video_id FROM video_like WHERE user_id=#{userId} ORDER BY id DESC LIMIT #{offset}, #{size}</select>
+</mapper>
