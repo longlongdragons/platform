@@ -1,24 +1,24 @@
-# frontend
+# 前端项目
 
-## Project setup
+## 项目设置
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 开发环境编译和热重载
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 生产环境编译和压缩
 ```
 npm run build
 ```
 
-### Lints and fixes files
+### 代码检查和修复
 ```
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 自定义配置
+请参考 [配置参考](https://cli.vuejs.org/config/).

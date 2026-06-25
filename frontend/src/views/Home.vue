@@ -276,12 +276,12 @@ async function toggleFav (v) {
   } catch (e) { ElMessage.error(e.message) }
 }
 
-async function toggleFollow (v) {
+async function toggleFollow (_v) {
   if (!userStore.isLogin) return router.push('/login')
   try {
-    const res = await request.post('/follow/toggle', null, { params: { followId: v.userId } })
-    v.followed = res.data.followed
-    if (singleVideo.value && singleVideo.value.id === v.id) {
+    const res = await request.post('/follow/toggle', null, { params: { followId: _v.userId } })
+    _v.followed = res.data.followed
+    if (singleVideo.value && singleVideo.value.id === _v.id) {
       singleVideo.value.followed = res.data.followed
     }
   } catch (e) { ElMessage.error(e.message) }

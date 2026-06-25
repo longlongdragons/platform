@@ -67,7 +67,7 @@ const displayVideos = computed(() => {
 })
 
 async function load () {
-  const id = route.params.id || route.path.includes('/me')
+  const _id = route.params.id || route.path.includes('/me')
   const userId = route.params.id || (window.localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null)
   if (!userId) return
   const [u, list] = await Promise.all([
